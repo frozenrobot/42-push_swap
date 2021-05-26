@@ -102,13 +102,11 @@ long	convert_to_int(char *str, int i, int size)
 	return ((long)result);
 }
 
-long	ft_atoi(char *str)
+long	ft_atoi(char *str, int i)
 {
 	long	multiply;
 	long	size;
-	int i;
 
-	i = 0;
 	if (!str)
 		return (0);
 	multiply = 1;
@@ -122,46 +120,67 @@ long	ft_atoi(char *str)
 	return ((long)multiply * (long)convert_to_int(str, i, size));
 }
 
-int valid_arg(char *str)
+int is_all_digit(char *str, int i)
 {
-	int i;
+	if (str[i] == '+' || str[i] == '-')
+		i++;
+	while (str[i] >= '0' && str[i] <= '9')
+		i++;
+	if (str[i] == '\0' || ft_isspace(str[i]))
+		return (1);
+	return (0);
+}
+
+/* Error code 20 */
+int ft_digitlen(char *str, int i)
+{
+	int len;
 	long int_min;
 	long int_max;
 	long num;
 
-	i = 0;
-	if (str[i] && (str[i] == '+' || str[i] == '-'))
-		i++;
-	while (str[i] && str[i] >= '0' && str[i] <= '9')
-		i++;
-	if (i != ft_strlen(str))
-		return (0);
+	len = 0;
 	int_min = -2147483648;
 	int_max = 2147483647;
-	num = ft_atoi(str);
-	// printf("num=%li\n", num);
+	if (!is_all_digit(str, i))
+		return (20);
+	num = ft_atoi(str, i);
 	if (num > int_max || num < int_min)
-		return (0);
-	return (1);
+		return (20);
+	if (str[i] == '+' || str[i] == '-')
+		len++;
+	while (str[i + len] >= '0' && str[i + len] <= '9')
+		len++;
+	return (len);
 }
 
 /* ################################################################################################################# */
 
 int input_isvalid(int ac, char *av[])
 {
-	int arg;
+	int i;
+	int count;
 
-	arg = 1;
-	if (ac < 2)
+	i = 0;
+	count = 0;
+	if (ac != 2)
 		return (0);
-	while (arg < ac)
+	while (av[1][i])
 	{
-		// printf("validarg=%i\n", valid_arg(av[arg]));
-		if (!valid_arg(av[arg]))
-			return (0);
-		arg++;
+		// printf("i=%i\n", i);
+		while(ft_isspace(av[1][i]))
+			i++;
+		if (av[1][i] && ft_digitlen(av[1], i))
+		{
+			// printf("digitlen=%i\n", count);
+			if (ft_digitlen(av[1], i) == 20)
+				return (0);
+			i += ft_digitlen(av[1], i);
+			count++;
+			// printf("digitlen=%i\n", count);
+		}
 	}
-	return (1);
+	return (count);
 }
 
 int main(int argc, char *argv[])
