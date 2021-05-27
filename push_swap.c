@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void	ft_putchar(char c)
 {
@@ -147,6 +148,88 @@ int valid_arg(char *str)
 
 /* ################################################################################################################# */
 
+typedef struct	s_stack
+{
+	int				value;
+	struct s_stack	*next;
+	struct s_stack	*prev;
+	int				index;
+}				t_stack;
+
+t_stack *create_stack_elem(int num, int i)
+{
+	t_stack *elem;
+
+	elem = malloc(sizeof(t_stack));
+	if (!elem)
+		return (NULL);
+	elem->value = num;
+	elem->index = i;
+	elem->next = NULL;
+	elem->prev = NULL;
+	return (elem);
+}
+
+t_stack *stack_add_back(t_stack *stack, int num, int i)
+{
+	t_stack *temp;
+	t_stack *new;
+
+	temp = stack;
+	new = create_stack_elem(num, i);
+	while (temp->next)
+		temp = temp->next;
+	temp->next = new;
+	new->prev = temp;
+	return (stack);
+}
+
+t_stack *args_insert_stack(int ac, char *av[]) //handle stack size 1 or empty stack
+{
+	int i;
+	t_stack *stack;
+	t_stack *temp;
+
+	stack = create_stack_elem(ft_atoi(av[1]), 1);
+	i = 2;
+	while (i < ac)
+	{
+		stack = stack_add_back(stack, ft_atoi(av[i]), i);
+		i++;
+	}
+	temp = stack;
+	while (temp->next)
+		temp = temp->next;
+	temp->next = stack;
+	stack->prev = temp;
+	return (stack);
+}
+
+// typedef struct	s_int
+// {
+// 	int num;
+// 	int valid;
+// }				t_int;
+
+// int *mem_plus_one_cpy(t_int *stack, int num)
+// {
+// 	t_int *new;
+// }
+
+// int *allocate_stack(int ac, char *av[]) //handle stack size 1 or empty stack
+// {
+// 	t_int i;
+// 	t_int *stack[1];
+
+// 	stack[0].num = ft_atoi(av[1]);
+// 	stack[0].valid = 1;
+// 	i = 2;
+// 	while (i < ac)
+// 	{
+// 		mem_plus_one_cpy(stack, ft_atoi(av[i]));
+// 	}
+// }
+
 int input_isvalid(int ac, char *av[])
 {
 	int arg;
@@ -166,10 +249,20 @@ int input_isvalid(int ac, char *av[])
 
 int main(int argc, char *argv[])
 {
+	t_stack *stack_a;
+
 	if (!input_isvalid(argc, argv))
 	{
 		ft_putstr("Error\n");
 		return (1);
 	}
 	ft_putnbr(input_isvalid(argc, argv));
+	printf("\n%i\n\n", argc);
+	stack_a = args_insert_stack(argc, argv);
+	t_stack *temp = stack_a;
+	for (int i = 1; i < 2 * argc; i++)
+	{
+		printf("%i: %i\n", i, temp->value);
+		temp = temp->next;
+	}
 }
