@@ -275,6 +275,38 @@ void pa(t_stack *stack_a, t_stack *stack_b)
 	temp->value = store;	
 }
 
+void r(t_stack *stack, int argc)
+{
+	t_stack *temp;
+	int store;
+
+	temp = stack;
+	while (temp->valid == 0) //find first valid elem
+		temp = temp->next;
+	store = temp->value;
+	while (temp->index != argc - 1)
+	{
+		temp->value = temp->next->value;
+		temp = temp->next;
+	}
+	temp->value = store;
+}
+
+void rr(t_stack *stack)
+{
+	t_stack *temp;
+	int store;
+
+	temp = stack->prev;
+	store = temp->value;
+	while (temp->index != 1 && temp->prev->valid != 0)
+	{
+		temp->value = temp->prev->value;
+		temp = temp->prev;
+	}
+	temp->value = store;
+}
+
 // typedef struct	s_int
 // {
 // 	int num;
@@ -332,36 +364,39 @@ int main(int argc, char *argv[])
 	stack_a = args_insert_stack(argc, argv);
 	stack_b = make_stack_b(argc, argv);
 	t_stack *temp = stack_a;
-	for (int i = 1; i < argc; i++)
-	{
-		printf("A%i [%i]: %i\n", i, temp->valid, temp->value);
-		temp = temp->next;
-	}
-	temp = stack_b;
-	for (int j = 1; j < argc; j++)
-	{
-		printf("B%i [%i]: %i\n", j, temp->valid, temp->value);
-		temp = temp->next;
-	}
-	s(stack_a, argc);
+	// for (int i = 1; i < argc; i++)
+	// {
+	// 	printf("A%i [%i]: %i\n", i, temp->valid, temp->value);
+	// 	temp = temp->next;
+	// }
+	// temp = stack_b;
+	// for (int j = 1; j < argc; j++)
+	// {
+	// 	printf("B%i [%i]: %i\n", j, temp->valid, temp->value);
+	// 	temp = temp->next;
+	// }
+	pb(stack_a, stack_b); pb(stack_a, stack_b); pb(stack_a, stack_b);
+	rr(stack_a);
+	rr(stack_a);
+	// rr(stack_a);
 	temp = stack_a;
 	for (int k = 1; k < argc; k++)
 	{
-		printf("SA%i [%i]: %i\n", k, temp->valid, temp->value);
+		printf("rA%i [%i]: %i\n", k, temp->valid, temp->value);
 		temp = temp->next;
 	}
-	pb(stack_a, stack_b);
-	pb(stack_a, stack_b);
-	temp = stack_a;
-	for (int l = 1; l < argc; l++)
-	{
-		printf("pbA%i [%i]: %i\n", l, temp->valid, temp->value);
-		temp = temp->next;
-	}
-	temp = stack_b;
-	for (int m = 1; m < argc; m++)
-	{
-		printf("pbB%i [%i]: %i\n", m, temp->valid, temp->value);
-		temp = temp->next;
-	}
+	// pb(stack_a, stack_b);
+	// pb(stack_a, stack_b);
+	// temp = stack_a;
+	// for (int l = 1; l < argc; l++)
+	// {
+	// 	printf("pbA%i [%i]: %i\n", l, temp->valid, temp->value);
+	// 	temp = temp->next;
+	// }
+	// temp = stack_b;
+	// for (int m = 1; m < argc; m++)
+	// {
+	// 	printf("pbB%i [%i]: %i\n", m, temp->valid, temp->value);
+	// 	temp = temp->next;
+	// }
 }
