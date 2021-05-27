@@ -154,6 +154,7 @@ typedef struct	s_stack
 	struct s_stack	*next;
 	struct s_stack	*prev;
 	int				index;
+	int				valid;
 }				t_stack;
 
 t_stack *create_stack_elem(int num, int i)
@@ -167,6 +168,7 @@ t_stack *create_stack_elem(int num, int i)
 	elem->index = i;
 	elem->next = NULL;
 	elem->prev = NULL;
+	elem->valid = 1;
 	return (elem);
 }
 
@@ -202,6 +204,24 @@ t_stack *args_insert_stack(int ac, char *av[]) //handle stack size 1 or empty st
 		temp = temp->next;
 	temp->next = stack;
 	stack->prev = temp;
+	return (stack);
+}
+
+t_stack *make_stack_b(int ac, char *av[])
+{
+	t_stack *stack;
+	t_stack *temp;
+	int i;
+
+	stack = args_insert_stack(ac, av);
+	temp = stack;
+	i = 1;
+	while (i < ac)
+	{
+		temp->valid = 0;
+		temp = temp->next;
+		i++;
+	}
 	return (stack);
 }
 
@@ -250,6 +270,7 @@ int input_isvalid(int ac, char *av[])
 int main(int argc, char *argv[])
 {
 	t_stack *stack_a;
+	t_stack *stack_b;
 
 	if (!input_isvalid(argc, argv))
 	{
@@ -259,10 +280,19 @@ int main(int argc, char *argv[])
 	ft_putnbr(input_isvalid(argc, argv));
 	printf("\n%i\n\n", argc);
 	stack_a = args_insert_stack(argc, argv);
+	stack_b = make_stack_b(argc, argv);
 	t_stack *temp = stack_a;
-	for (int i = 1; i < 2 * argc; i++)
+	for (int i = 1; i < argc; i++)
 	{
-		printf("%i: %i\n", i, temp->value);
+		printf("A%i_Value: %i\n", i, temp->value);
+		printf("A%i_Valid: %i\n", i, temp->valid);
+		temp = temp->next;
+	}
+	temp = stack_b;
+	for (int j = 1; j < argc; j++)
+	{
+		printf("B%i_Value: %i\n", j, temp->value);
+		printf("B%i_Valid: %i\n", j, temp->valid);
 		temp = temp->next;
 	}
 }
