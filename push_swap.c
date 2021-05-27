@@ -157,7 +157,7 @@ typedef struct	s_stack
 	int				valid;
 }				t_stack;
 
-void free_stack_list(t_stack *stack)
+void free_stack_list(t_stack *stack) //unverified
 {
 	t_stack *temp;
 
@@ -180,7 +180,28 @@ void free_stack_list(t_stack *stack)
 	free(stack);
 }
 
-// void free_stack_cycle
+void free_stack_cycle(t_stack *stack, int argc) //unverified
+{
+	t_stack *temp;
+
+	temp = stack;
+	while (temp->index != argc - 1)
+	{
+		temp->prev = NULL;
+		temp = temp->next;
+	}
+	temp->prev = NULL;
+	temp->next = NULL;
+	temp = stack;
+	while (stack->index != argc - 1)
+	{
+		stack = stack->next;
+		temp->next = NULL;
+		free(temp);
+		temp = stack;
+	}
+	free(temp);
+}
 
 t_stack *create_stack_elem(int num, int i)
 {
