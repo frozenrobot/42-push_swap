@@ -332,6 +332,28 @@ void rr(t_stack *stack)
 // 	}
 // }
 
+int check_repetition(itn ac, char *av[])
+{
+	int i;
+	int j;
+	int num;
+
+	i = 1;
+	while (i < ac - 1)
+	{
+		num = ft_atoi(av[i]);
+		j = i + 1;
+		while (j < ac)
+		{
+			if (num == ft_atoi(av[j]))
+				return (1);
+			j++;
+		}
+		i++;
+	}
+	return (0);
+}
+
 int input_isvalid(int ac, char *av[])
 {
 	int arg;
@@ -346,6 +368,8 @@ int input_isvalid(int ac, char *av[])
 			return (0);
 		arg++;
 	}
+	if (check_repetition(ac, av))
+		return (0);
 	return (1);
 }
 
