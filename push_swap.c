@@ -157,6 +157,31 @@ typedef struct	s_stack
 	int				valid;
 }				t_stack;
 
+void free_stack_list(t_stack *stack)
+{
+	t_stack *temp;
+
+	temp = stack;
+	while (temp->next->next)
+		temp = temp->next;
+	stack = temp->next; //stack is the last elem
+	while (temp->prev)
+	{
+		temp->next = NULL;
+		temp = temp->prev;
+	}
+	while (stack->prev)
+	{
+		temp = stack;
+		stack = stack->prev;
+		temp->prev = NULL;
+		free(temp);
+	}
+	free(stack);
+}
+
+// void free_stack_cycle
+
 t_stack *create_stack_elem(int num, int i)
 {
 	t_stack *elem;
@@ -177,8 +202,12 @@ t_stack *stack_add_back(t_stack *stack, int num, int i)
 	t_stack *temp;
 	t_stack *new;
 
+	if (!stack)
+		return (NULL);
 	temp = stack;
 	new = create_stack_elem(num, i);
+	if (!new)
+		free_stack_list(stack);
 	while (temp->next)
 		temp = temp->next;
 	temp->next = new;
@@ -193,6 +222,8 @@ t_stack *args_insert_stack(int ac, char *av[]) //handle stack size 1 or empty st
 	t_stack *temp;
 
 	stack = create_stack_elem(ft_atoi(av[1]), 1);
+	if (!stack)
+		return (NULL);
 	i = 2;
 	while (i < ac)
 	{
@@ -332,7 +363,7 @@ void rr(t_stack *stack)
 // 	}
 // }
 
-int check_repetition(itn ac, char *av[])
+int check_repetition(int ac, char *av[])
 {
 	int i;
 	int j;
