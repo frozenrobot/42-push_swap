@@ -496,10 +496,40 @@ void insertion_sort(t_stack *stack_a, t_stack *stack_b, int ac)
 	}
 }
 
+void unruled_insertion_sort(t_stack *stack, int ac, int i, int min)
+{
+	t_stack *temp;
+	t_stack *temp2;
+
+	temp = stack;
+	temp->prev = NULL;
+	while (i++ < ac - 1)
+		temp = temp->next;
+	temp->next = NULL;
+	temp = stack;
+	while (temp->next)
+	{
+		temp2 = temp;
+		min = temp2->value;
+		while (temp2->next)
+		{
+			temp2 = temp2->next;
+			if (temp2->value < min)
+			{
+				temp->value = temp2->value;
+				temp2->value = min;
+				min = temp->value;
+			}
+		}
+		temp = temp->next;
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	t_stack *stack_a;
 	t_stack *stack_b;
+	t_stack *stack_c;
 
 	if (!input_isvalid(argc, argv))
 	{
@@ -510,20 +540,19 @@ int main(int argc, char *argv[])
 	// printf("\n%i\n\n", argc);
 	stack_a = args_insert_stack(argc, argv);
 	stack_b = make_stack_b(argc, argv);
-	insertion_sort(stack_a, stack_b, argc);
+	stack_c = args_insert_stack(argc, argv);
+	unruled_insertion_sort(stack_c, argc, 1, 0);
+	// insertion_sort(stack_a, stack_b, argc);
 
 
+	t_stack *temp = stack_c;
+	for (int k = 1; k < argc; k++)
+	{
+		printf("A%i [%i]: %i\n", k, temp->valid, temp->value);
+		temp = temp->next;
+	}
 
+	free_stack_cycle(stack_a, argc);
+	free_stack_cycle(stack_b, argc);
 
-	// t_stack *temp = stack_a;
-	// pb(stack_a, stack_b); pb(stack_a, stack_b); pb(stack_a, stack_b);
-	// rr(stack_a);
-	// rr(stack_a);
-	// // rr(stack_a);
-	// temp = stack_a;
-	// for (int k = 1; k < argc; k++)
-	// {
-	// 	printf("rA%i [%i]: %i\n", k, temp->valid, temp->value);
-	// 	temp = temp->next;
-	// }
 }
