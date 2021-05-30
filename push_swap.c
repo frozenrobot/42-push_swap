@@ -459,42 +459,132 @@ int input_isvalid(int ac, char *av[])
 	return (1);
 }
 
-void insertion_sort(t_stack *stack_a, t_stack *stack_b, int ac)
+int is_ascending_a(t_stack *stack, int ac)
 {
-	int min;
+	t_stack *temp;
 	int i;
-	int j;
+
+	i = 1;
+	temp = stack;
+	while (i++ < ac && temp->valid == 0)
+		temp = temp->next;
+	while (i++ < ac - 1)
+	{
+		if (temp->next->value < temp->value)
+			return (0);
+		temp = temp->next;	
+	}
+	return (1);
+}
+
+// int is_descending_b(t_stack *stack, )
+// {
+// 	t_stack *temp;
+// 	int i;
+
+// 	i = 1;
+// 	temp = stack;
+// 	while (i++ < ac && temp->valid == 0)
+// 		temp = temp->next;
+// 	while (i++ < ac - 1)
+// 	{
+// 		if (temp->next->value > temp->value)
+// 			return (0);
+// 		temp = temp->next;	
+// 	}
+// 	return (1);
+// }
+
+int is_sort_a(t_stack *stack, int ac)
+{
+	int i;
 	t_stack *temp;
 
-	j = 1;
-	while (j < ac)
+	i = 1;
+	temp = stack;
+	if (temp->valid == 0)
+		return (0);
+	while (i < ac - 1)
 	{
-		i = 1;
-		temp = stack_a;
-		while (temp->valid != 1)
-			temp = temp->next;
-		min = temp->value;
-		temp = stack_a;
-		while (i < ac)
-		{
-			temp = temp->next;
-			if (temp->valid == 1 && temp->value < min)
-				min = temp->value;
-			i++;
-		}
-		while (stack_a->prev->valid == 1 && stack_a->prev->value != min)
-			rra(stack_a);
-		rra(stack_a);
-		pb(stack_a, stack_b);
-		j++;	
+		temp = temp->next;
+		if (temp->valid == 0 || temp->value < temp->prev->value)
+			return (0);
+		i++;
 	}
-	j = 1;
-	while (j < ac)
-	{
-		pa(stack_a, stack_b);
-		j++;
-	}
+	return (1);
 }
+
+
+
+// void insertion_sort(t_stack *stack_a, t_stack *stack_b, int ac)
+// {
+// 	int min;
+// 	int i;
+// 	int j;
+// 	t_stack *temp;
+
+// 	j = 1;
+// 	while (j < ac)
+// 	{
+// 		i = 1;
+// 		temp = stack_a;
+// 		while (temp->valid != 1)
+// 			temp = temp->next;
+// 		min = temp->value;
+// 		temp = stack_a;
+// 		while (i < ac)
+// 		{
+// 			temp = temp->next;
+// 			if (temp->valid == 1 && temp->value < min)
+// 				min = temp->value;
+// 			i++;
+// 		}
+// 		while (stack_a->prev->valid == 1 && stack_a->prev->value != min)
+// 			rra(stack_a);
+// 		rra(stack_a);
+// 		pb(stack_a, stack_b);
+// 		j++;	
+// 	}
+// 	j = 1;
+// 	while (j < ac)
+// 	{
+// 		pa(stack_a, stack_b);
+// 		j++;
+// 	}
+// }
+
+// void unruled_insertion_sort(t_stack *stack, int ac, int i, int min) // i = 1, min = 0; // WEIRD VERSION
+// {
+// 	t_stack *temp;
+// 	t_stack *temp2;
+// 	int j;
+
+// 	temp = stack;
+// 	while (i < ac - 1 && temp->valid == 0)
+// 	{
+// 		temp = temp->next;
+// 		i++;
+// 	}
+// 	while (i < ac)
+// 	{
+// 		temp2 = temp;
+// 		min = temp2->value;
+// 		j = i;
+// 		while (j < ac)
+// 		{
+// 			temp2 = temp2->next;
+// 			if (temp2->value < min)
+// 			{
+// 				temp->value = temp2->value;
+// 				temp2->value = min;
+// 				min = temp->value;
+// 			}
+// 			j++;
+// 		}
+// 		temp = temp->next;
+// 		i++;
+// 	}
+// }
 
 void unruled_insertion_sort(t_stack *stack, int ac, int i, int min)
 {
@@ -507,6 +597,8 @@ void unruled_insertion_sort(t_stack *stack, int ac, int i, int min)
 		temp = temp->next;
 	temp->next = NULL;
 	temp = stack;
+	while (temp->valid == 0)
+		temp = temp->next;
 	while (temp->next)
 	{
 		temp2 = temp;
@@ -523,6 +615,185 @@ void unruled_insertion_sort(t_stack *stack, int ac, int i, int min)
 		}
 		temp = temp->next;
 	}
+}
+
+int valid_count(t_stack *stack, int ac)
+{
+	int i;
+	t_stack *temp;
+	int count;
+
+	i = 1;
+	count = 0;
+	temp = stack;
+	while (i < ac && temp->valid == 0)
+	{
+		temp = temp->next;
+		i++;
+	}
+	while (i++ < ac)
+	{
+		count++;
+		temp = temp->next;
+	}
+	return (count);
+}
+
+void three_sort_a(t_stack *stack, int ac) // only use when you KNOW there's 3 valid remaining
+{
+	t_stack *temp;
+
+	temp = stack;
+	while (temp->valid == 0)
+		temp = temp->next;
+	if (temp->value < temp->next->value)
+	{
+		if (temp->next->next->value < temp->value) // 2 3 1
+			rra(stack);
+		else if (temp->next->value > temp->next->next->value) // 1 3 2
+		{
+			ra(stack, ac);
+			sa(stack, ac);
+			rra(stack);
+		}
+	}
+	else if (temp->next->value > temp->next->next->value) // 3 2 1
+	{
+		sa(stack, ac);
+		rra(stack);
+	}
+	else if (temp->value < temp->next->next->value) // 2 1 3
+		sa(stack, ac);
+	else if (temp->value > temp->next->next->value) // 3 1 2
+		ra(stack, ac);
+}
+
+int midpoint(t_stack *stack, int ac) // make sure count > 3
+{
+	int count;
+	int i;
+	t_stack *temp;
+
+	temp = stack;
+	count = valid_count(stack, ac);
+	printf("count = %i\n", count);
+	i = 0;
+	while (temp->valid == 0)
+		temp = temp->next;
+	while (i < (count / 2))
+	{
+		temp = temp->next;
+		i++;
+	}
+	return (temp->value);
+}
+
+int scan_left(t_stack *stack, int mid, int ac)
+{
+	t_stack *temp;
+	int i;
+
+	temp = stack;
+	i = 1;
+	while (temp->valid == 0 && i < ac)
+	{
+		temp = temp->next;
+		i++;
+	}
+	while (temp->valid == 1 && i < ac)
+	{
+		if (temp->value < mid)
+			return (1);
+		temp = temp->next;
+		i++;
+	}
+	return (0);
+}
+
+void sort_less_than_three_a(t_stack *stack_a, int count, int ac)
+{
+	t_stack *temp;
+
+	temp = stack_a;
+	if (count == 0)
+		return;
+	while (temp->valid == 0)
+		temp = temp->next;
+	if (count == 1)
+		return ;
+	else if (count == 2)
+	{
+		if (temp->value > temp->next->value)
+			sa(stack_a, ac);
+		return ;
+	}
+	else if (count == 3)
+		return three_sort_a(stack_a, ac);
+}
+
+void sort_less_than_three_b(t_stack *stack_b, int count, int ac)
+{
+	t_stack *temp;
+
+	temp = stack_b;
+	if (count == 0)
+		return;
+	while (temp->valid == 0)
+		temp = temp->next;
+	if (count == 1)
+		return ;
+	else if (count == 2)
+	{
+		if (temp->value > temp->next->value)
+			sb(stack_b, ac);
+		return ;
+	}
+	else if (count == 3)
+		return three_sort_a(stack_b, ac);
+}
+
+void midpoint_algo_first(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
+{
+	t_stack *temp;
+
+	temp = stack_a;
+	printf("mid=%i\n", mid);
+	while (scan_left(stack_a, mid, ac))
+	{
+		while (temp->value < mid && scan_left(stack_a, mid, ac) && valid_count(stack_a, ac) > 3)
+		{
+			pb(stack_a, stack_b);
+			temp = temp->next;
+			printf("valid=%i\n", valid_count(stack_a, ac));
+		}
+		temp = temp->prev;
+		while (temp->valid == 0 && scan_left(stack_a, mid, ac) && valid_count(stack_a, ac) > 3)
+			temp = temp->prev;
+		while (temp->value >= mid && scan_left(stack_a, mid, ac) && valid_count(stack_a, ac) > 3)
+			rra(stack_a);
+		while (temp->value < mid && temp->valid == 1 && valid_count(stack_a, ac) > 3)
+		{
+			rra(stack_a);
+			pb(stack_a, stack_b);
+			printf("valid=%i\n", valid_count(stack_a, ac));
+		}
+		temp = temp->next;
+		while (temp->valid == 0 && scan_left(stack_a, mid, ac) && valid_count(stack_a, ac) > 3)
+			temp = temp->next;
+		while (temp->value >= mid && scan_left(stack_a, mid, ac) && valid_count(stack_a, ac) > 3)
+			ra(stack_a, ac);
+	}
+	sort_less_than_three_a(stack_a, valid_count(stack_a, ac), ac);
+}
+
+void sort(t_stack *stack_a, t_stack *stack_b, t_stack *stack_c, int ac)
+{
+	if (ac <= 4)
+		return (sort_less_than_three_a(stack_a, valid_count(stack_a, ac), ac));
+	else if (is_sort_a(stack_a, ac)) //dealt with sizes 1-3 and already sorted lists
+		return ;
+	midpoint_algo_first(stack_a, stack_b, ac, midpoint(stack_c, ac));
+	// midpoint_algo(stack_a, stack_b, ac); //(only top)
 }
 
 int main(int argc, char *argv[])
@@ -543,14 +814,22 @@ int main(int argc, char *argv[])
 	stack_c = args_insert_stack(argc, argv);
 	unruled_insertion_sort(stack_c, argc, 1, 0);
 	// insertion_sort(stack_a, stack_b, argc);
+	sort(stack_a, stack_b, stack_c, argc);
 
 
-	t_stack *temp = stack_c;
+	t_stack *temp = stack_a;
 	for (int k = 1; k < argc; k++)
 	{
 		printf("A%i [%i]: %i\n", k, temp->valid, temp->value);
 		temp = temp->next;
 	}
+	temp = stack_b;
+	for (int m = 1; m < argc; m++)
+	{
+		printf("B%i [%i]: %i\n", m, temp->valid, temp->value);
+		temp = temp->next;
+	}
+	// printf("mid = %i\n", midpoint(stack_c, argc));
 
 	free_stack_cycle(stack_a, argc);
 	free_stack_cycle(stack_b, argc);
