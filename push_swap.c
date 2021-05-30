@@ -676,7 +676,7 @@ int midpoint(t_stack *stack, int ac) // make sure count > 3
 
 	temp = stack;
 	count = valid_count(stack, ac);
-	printf("count = %i\n", count);
+	// printf("count = %i\n", count);
 	i = 0;
 	while (temp->valid == 0)
 		temp = temp->next;
@@ -757,14 +757,14 @@ void midpoint_algo_first(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
 	t_stack *temp;
 
 	temp = stack_a;
-	printf("mid=%i\n", mid);
+	// printf("mid=%i\n", mid);
 	while (scan_left(stack_a, mid, ac))
 	{
 		while (temp->value < mid && scan_left(stack_a, mid, ac) && valid_count(stack_a, ac) > 3)
 		{
 			pb(stack_a, stack_b);
 			temp = temp->next;
-			printf("valid=%i\n", valid_count(stack_a, ac));
+			// printf("valid=%i\n", valid_count(stack_a, ac));
 		}
 		temp = temp->prev;
 		while (temp->valid == 0 && scan_left(stack_a, mid, ac) && valid_count(stack_a, ac) > 3)
@@ -775,7 +775,7 @@ void midpoint_algo_first(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
 		{
 			rra(stack_a);
 			pb(stack_a, stack_b);
-			printf("valid=%i\n", valid_count(stack_a, ac));
+			// printf("valid=%i\n", valid_count(stack_a, ac));
 		}
 		temp = temp->next;
 		while (temp->valid == 0 && scan_left(stack_a, mid, ac) && valid_count(stack_a, ac) > 3)
