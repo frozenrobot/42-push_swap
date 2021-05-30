@@ -685,6 +685,7 @@ int midpoint(t_stack *stack, int ac) // make sure count > 3
 		temp = temp->next;
 		i++;
 	}
+	// printf("mid = %i\n", temp->value);
 	return (temp->value);
 }
 
@@ -758,8 +759,12 @@ void midpoint_algo_first(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
 
 	temp = stack_a;
 	// printf("mid=%i\n", mid);
-	while (scan_left(stack_a, mid, ac))
+	while (scan_left(stack_a, mid, ac) && valid_count(stack_a, ac) > 3)
 	{
+		while (temp->valid == 0 && scan_left(stack_a, mid, ac) && valid_count(stack_a, ac) > 3)
+			temp = temp->next;
+		while (temp->value >= mid && scan_left(stack_a, mid, ac) && valid_count(stack_a, ac) > 3)
+			ra(stack_a, ac);
 		while (temp->value < mid && scan_left(stack_a, mid, ac) && valid_count(stack_a, ac) > 3)
 		{
 			pb(stack_a, stack_b);
@@ -778,12 +783,29 @@ void midpoint_algo_first(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
 			// printf("valid=%i\n", valid_count(stack_a, ac));
 		}
 		temp = temp->next;
-		while (temp->valid == 0 && scan_left(stack_a, mid, ac) && valid_count(stack_a, ac) > 3)
-			temp = temp->next;
-		while (temp->value >= mid && scan_left(stack_a, mid, ac) && valid_count(stack_a, ac) > 3)
-			ra(stack_a, ac);
 	}
 	sort_less_than_three_a(stack_a, valid_count(stack_a, ac), ac);
+}
+
+void duplicate_stack(t_stack *stack_c, t_stack *stack, int ac)
+{
+	int i;
+	t_stack *temp_c;
+	t_stack *temp;
+
+	i = 1;
+	temp = stack;
+	temp_c = stack_c;
+	temp_c->value = temp->value;
+	temp_c->valid = temp->valid;
+	while (i < ac - 1)
+	{
+		temp = temp->next;
+		temp_c = temp_c->next;
+		temp_c->value = temp->value;
+		temp_c->valid = temp->valid;
+		i++;
+	}
 }
 
 void sort(t_stack *stack_a, t_stack *stack_b, t_stack *stack_c, int ac)
@@ -792,7 +814,12 @@ void sort(t_stack *stack_a, t_stack *stack_b, t_stack *stack_c, int ac)
 		return (sort_less_than_three_a(stack_a, valid_count(stack_a, ac), ac));
 	else if (is_sort_a(stack_a, ac)) //dealt with sizes 1-3 and already sorted lists
 		return ;
-	midpoint_algo_first(stack_a, stack_b, ac, midpoint(stack_c, ac));
+	while (valid_count(stack_a, ac) > 3) //need new stack_c
+	{
+		duplicate_stack(stack_c, stack_a, ac);
+		unruled_insertion_sort(stack_c, ac, 1, 0);
+		midpoint_algo_first(stack_a, stack_b, ac, midpoint(stack_c, ac));
+	}
 	// midpoint_algo(stack_a, stack_b, ac); //(only top)
 }
 
@@ -809,10 +836,9 @@ int main(int argc, char *argv[])
 	}
 	// ft_putnbr(input_isvalid(argc, argv));
 	// printf("\n%i\n\n", argc);
+	stack_c = args_insert_stack(argc, argv);
 	stack_a = args_insert_stack(argc, argv);
 	stack_b = make_stack_b(argc, argv);
-	stack_c = args_insert_stack(argc, argv);
-	unruled_insertion_sort(stack_c, argc, 1, 0);
 	// insertion_sort(stack_a, stack_b, argc);
 	sort(stack_a, stack_b, stack_c, argc);
 
