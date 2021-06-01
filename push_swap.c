@@ -1146,25 +1146,8 @@ void midpoint_algo(t_stack *stack_a, t_stack *stack_b, t_stack *stack_d, int ac)
 			update_stack_d(sub_d, stack_b, ac, mid2);
 		}
 		midpoint_algo_two_a(stack_a, mid, ac);
-	}
-
-	if ///
-	{
 		return (midpoint_algo(stack_a, stack_b, sub_d, ac));
 	}
-	free sub_d
-	// if (stack_d->valid == 0) //hmmmm
-	// {
-	// 	stack_d = stack_d->next;
-	// 	return ;
-	// }
-	// value = stack_d->value;
-	// valid = stack_d->valid;
-	// if (valid <= 2)
-	// {
-	// 	if 
-	// }
-	free_stack_cycle(stack_d, ac);
 }
 
 void sort(t_stack *stack_a, t_stack *stack_b, int ac)
@@ -1204,7 +1187,7 @@ void sort(t_stack *stack_a, t_stack *stack_b, int ac)
 	}
 	// midpoint_algo(stack_a, stack_b, ac); //(only top)
 
-	// FREE STACK_D !!!
+	free_stack_cycle(stack_d, ac);
 }
 
 int main(int argc, char *argv[])
