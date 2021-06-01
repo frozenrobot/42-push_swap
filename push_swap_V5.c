@@ -959,6 +959,7 @@ void sort(t_stack *stack_a, t_stack *stack_b, int ac)
 {
 	t_stack *stack_d_static;
 	t_stack *stack_d;
+	int mid;
 
 	stack_d_static = zero_insert_stack(ac);
 	set_invalid(stack_d_static, ac);
@@ -969,17 +970,18 @@ void sort(t_stack *stack_a, t_stack *stack_b, int ac)
 		return ;
 	while (valid_count(stack_a, ac) > 3)
 	{
-		midpoint_algo_first(stack_a, stack_b, ac, midpoint(stack_a, ac));
-		update_stack_d(stack_d, stack_b, ac, midpoint(stack_a, ac));
+		mid = midpoint(stack_a, ac);
+		midpoint_algo_first(stack_a, stack_b, ac, mid);
+		update_stack_d(stack_d, stack_b, ac, mid);
 	}
 	while (stack_d->valid == 0)
 		stack_d = stack_d->next; // becomes only as long as the number of 'big chunks' in stack_b
-	// t_stack *temp = stack_d_static;
-	// for (int k = 1; k < ac; k++)
-	// {
-	// 	printf("D%i [%i]: %i\n", k, temp->valid, temp->value);
-	// 	temp = temp->next;
-	// }
+	t_stack *temp = stack_d_static;
+	for (int k = 1; k < ac; k++)
+	{
+		printf("D%i [%i]: %i\n", k, temp->valid, temp->value);
+		temp = temp->next;
+	}
 	
 	// while (count_valid(stack_d) != 0)
 	// {

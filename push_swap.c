@@ -1020,7 +1020,7 @@ void update_stack_d(t_stack *stack_d, t_stack *stack_b, int ac, int mid)
 }
 
 void push_b_iterate_top(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
-{ // sends ALL values >= mid from a to b
+{ // sends ALL values < mid from a to b
 	t_stack *temp;
 	int count_ra;
 
@@ -1050,7 +1050,7 @@ void push_b_iterate_top(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
 }
 
 void push_a_iterate_top(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
-{ // sends all values < mid from b to a
+{ // sends all values >= mid from b to a
 	t_stack *temp;
 	int count_rb;
 
@@ -1079,21 +1079,80 @@ void push_a_iterate_top(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
 	}
 }
 
+void midpoint_algo_two_b(t_stack *stack_a, t_stack *stack_b, t_stack *d, int ac)
+{
+	t_stack *d;
+	t_stack *temp;
+
+	temp = stack_b;
+	if (d->valid == 1)
+	{
+		pa(stack_a, stack_b);
+	}
+	else if (d->valid == 2)
+	{
+		while (temp->valid == 0)
+			temp = temp->next;
+		if (temp->value > temp->next->value)
+			sb(stack_b, ac);
+		pa(stack_a, stack_b);
+		pa(stack_a, stack_b);
+	}
+	d->valid = 0;
+}
+
+void midpoint_algo_two_a(t_stack *stack_a, int mid, int ac)
+{
+	t_stack *temp;
+
+	temp = stack_a;
+	while (temp->valid == 0)
+		temp = temp->next;
+	if (valid_count_a_top(stack_a, mid) == 2)
+	{
+		if (temp->value > temp->next->value)
+			sa(stack_a, ac);
+	}
+}
+
 void midpoint_algo(t_stack *stack_a, t_stack *stack_b, t_stack *stack_d, int ac)
 {
-	// int value;
-	// int valid;
+	int value;
+	int valid;
+	t_stack *temp;
+	int mid;
+	// int mid2;
+	t_stack *sub_d;
 
-	while (valid_count(stack_d, ac) != 0)
+	temp = stack_d;
+	value = temp->next->value;
+	valid = temp->valid;
+	if (valid == 1 || valid == 2)
 	{
-		
-		
-		if ///
-		{
-			return (midpoint_algo(stack_a, stack_b, sub_d, ac));
-		}
-		free sub_d
+		midpoint_algo_two_b(stack_a, stack_b, temp, ac);
+		free_stack_cycle(sub_d, ac);
+		return ;
 	}
+	else
+	{
+		mid = midpoint_chunk_morethan_b(stack_b, value, ac);
+		push_a_iterate_top(stack_a, stack_b, ac, mid);
+		sub_d = zero_insert_stack(ac);
+		set_invalid(sub_d, ac);
+		while (valid_count_a_top(stack_a, mid) > 2)
+		{
+			mid2 = midpoint_chunk_lessthan_a(stack_a, mid, ac)
+			push_b_iterate_top(stack_a, stack_b, ac, mid2);
+			update_stack_d(sub_d, stack_b, ac, mid2);
+		}
+		midpoint_algo_two_a(stack_a, mid, ac);
+	}
+
+	if ///
+	{
+		return (midpoint_algo(stack_a, stack_b, sub_d, ac));
+	}
+	free sub_d
 	// if (stack_d->valid == 0) //hmmmm
 	// {
 	// 	stack_d = stack_d->next;
@@ -1112,6 +1171,7 @@ void sort(t_stack *stack_a, t_stack *stack_b, int ac)
 {
 	t_stack *stack_d_static;
 	t_stack *stack_d;
+	int mid;
 
 	stack_d_static = zero_insert_stack(ac);
 	set_invalid(stack_d_static, ac);
@@ -1122,8 +1182,9 @@ void sort(t_stack *stack_a, t_stack *stack_b, int ac)
 		return ;
 	while (valid_count(stack_a, ac) > 3)
 	{
-		midpoint_algo_first(stack_a, stack_b, ac, midpoint(stack_a, ac));
-		update_stack_d(stack_d, stack_b, ac, midpoint(stack_a, ac));
+		mid = midpoint(stack_a, ac);
+		midpoint_algo_first(stack_a, stack_b, ac, mid);
+		update_stack_d(stack_d, stack_b, ac, mid);
 	}
 	while (stack_d->valid == 0)
 		stack_d = stack_d->next; // becomes only as long as the number of 'big chunks' in stack_b
@@ -1138,6 +1199,8 @@ void sort(t_stack *stack_a, t_stack *stack_b, int ac)
 	while (count_valid(stack_d) != 0)
 	{
 		midpoint_algo(stack_a, stack_b, stack_d, ac);
+		stack_d->valid = 0;
+		stack_d = stack_d->next;
 	}
 	// midpoint_algo(stack_a, stack_b, ac); //(only top)
 
