@@ -677,52 +677,6 @@ int valid_count(t_stack *stack, int ac)
 	return (count);
 }
 
-int valid_count_a_top(t_stack *stack, int mid, int ac)
-{
-	int i;
-	t_stack *temp;
-	int count;
-
-	i = 1;
-	count = 0;
-	temp = stack;
-	while (i < ac && temp->valid == 0)
-	{
-		temp = temp->next;
-		i++;
-	}
-	while (i < ac && temp->value < mid)
-	{
-		count++;
-		temp = temp->next;
-		i++;
-	}
-	return (count);
-}
-
-int valid_count_b_top(t_stack *stack, int mid, int ac)
-{
-	int i;
-	t_stack *temp;
-	int count;
-
-	i = 1;
-	count = 0;
-	temp = stack;
-	while (i < ac && temp->valid == 0)
-	{
-		temp = temp->next;
-		i++;
-	}
-	while (i < ac && temp->value >= mid)
-	{
-		count++;
-		temp = temp->next;
-		i++;
-	}
-	return (count);
-}
-
 void three_sort_a(t_stack *stack, int ac) // only use when you KNOW there's 3 valid remaining
 {
 	t_stack *temp;
@@ -843,28 +797,6 @@ int scan_left(t_stack *stack, int mid, int ac)
 	while (temp->valid == 1 && i < ac)
 	{
 		if (temp->value < mid)
-			return (1);
-		temp = temp->next;
-		i++;
-	}
-	return (0);
-}
-
-int scan_left_b(t_stack *stack, int mid, int ac)
-{
-	t_stack *temp;
-	int i;
-
-	temp = stack;
-	i = 1;
-	while (temp->valid == 0 && i < ac)
-	{
-		temp = temp->next;
-		i++;
-	}
-	while (temp->valid == 1 && i < ac)
-	{
-		if (temp->value >= mid)
 			return (1);
 		temp = temp->next;
 		i++;
@@ -1015,82 +947,13 @@ void update_stack_d(t_stack *stack_d, t_stack *stack_b, int ac, int mid)
 		temp = temp->prev;
 	temp->value = mid;
 	temp->valid = valid_count(stack_b, ac) - previously;
-	// temp->index = 
 	stack_d->value = valid_count(stack_b, ac);
 }
 
-void push_b_iterate_top(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
-{ // sends all values >= mid from a to b
-	t_stack *temp;
-	int count_ra;
+// void midpoint_algo(t_stack *stack_a, t_stack *stack_b, t_stack *stack_d, int ac)
+// {
 
-	temp = stack_a;
-	count_ra = 0;
-	while (scan_left(stack_a, mid, ac) && valid_count_a_top(stack_a, mid, ac) > 2)
-	{
-		while (temp->valid == 0 && scan_left(stack_a, mid, ac) && valid_count_a_top(stack_a, mid, ac) > 2)
-			temp = temp->next;
-		while (temp->value >= mid && scan_left(stack_a, mid, ac) && valid_count_a_top(stack_a, mid, ac) > 2)
-		{
-			ra(stack_a, ac);
-			count_ra++;
-		}
-		while (temp->value < mid && scan_left(stack_a, mid, ac) && valid_count_a_top(stack_a, mid, ac) > 2)
-		{
-			pb(stack_a, stack_b);
-			temp = temp->next;
-			// printf("valid=%i\n", valid_count(stack_a, ac));
-		}
-	}
-	while (count_ra > 0)
-	{
-		rra(stack_a);
-		count--;
-	}
-}
-
-void push_a_iterate_top(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
-{ // sends all values < mid from b to a
-	t_stack *temp;
-	int count_rb;
-
-	temp = stack_a;
-	count_rb = 0;
-	while (scan_left_b(stack_b, mid, ac) && valid_count_b_top(stack_a, mid, ac) > 2)
-	{
-		while (temp->valid == 0 && scan_left_b(stack_b, mid, ac) && valid_count_b_top(stack_b, mid, ac) > 2)
-			temp = temp->next;
-		while (temp->value < mid && scan_left_b(stack_b, mid, ac) && valid_count_b_top(stack_b, mid, ac) > 2)
-		{
-			rb(stack_b, ac);
-			count_rb++;
-		}
-		while (temp->value >= mid && scan_left_b(stack_b, mid, ac) && valid_count_b_top(stack_b, mid, ac) > 2)
-		{
-			pa(stack_a, stack_b);
-			temp = temp->next;
-			// printf("valid=%i\n", valid_count(stack_a, ac));
-		}
-	}
-	while (count_rb > 0)
-	{
-		rrb(stack_b);
-		count--;
-	}
-}
-
-void midpoint_algo(t_stack *stack_a, t_stack *stack_b, t_stack *stack_d, int ac)
-{
-	int value;
-	int valid;
-
-	if (stack_d->valid == 0)
-	{
-		stack_d = stack_d->next;
-		return ;
-	}
-	value = stack
-}
+// }
 
 void sort(t_stack *stack_a, t_stack *stack_b, int ac)
 {
@@ -1111,7 +974,6 @@ void sort(t_stack *stack_a, t_stack *stack_b, int ac)
 	}
 	while (stack_d->valid == 0)
 		stack_d = stack_d->next; // becomes only as long as the number of 'big chunks' in stack_b
-	
 	// t_stack *temp = stack_d_static;
 	// for (int k = 1; k < ac; k++)
 	// {
@@ -1119,10 +981,10 @@ void sort(t_stack *stack_a, t_stack *stack_b, int ac)
 	// 	temp = temp->next;
 	// }
 	
-	while (count_valid(stack_d) != 0)
-	{
-		midpoint_algo(stack_a, stack_b, stack_d, ac);
-	}
+	// while (count_valid(stack_d) != 0)
+	// {
+	// 	midpoint_algo(stack_a, stack_b, stack_d, ac);
+	// }
 	// midpoint_algo(stack_a, stack_b, ac); //(only top)
 
 	// FREE STACK_D !!!
