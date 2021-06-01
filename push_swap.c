@@ -1081,7 +1081,6 @@ void push_a_iterate_top(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
 
 void midpoint_algo_two_b(t_stack *stack_a, t_stack *stack_b, t_stack *d, int ac)
 {
-	t_stack *d;
 	t_stack *temp;
 
 	temp = stack_b;
@@ -1108,7 +1107,7 @@ void midpoint_algo_two_a(t_stack *stack_a, int mid, int ac)
 	temp = stack_a;
 	while (temp->valid == 0)
 		temp = temp->next;
-	if (valid_count_a_top(stack_a, mid) == 2)
+	if (valid_count_a_top(stack_a, mid, ac) == 2)
 	{
 		if (temp->value > temp->next->value)
 			sa(stack_a, ac);
@@ -1121,12 +1120,14 @@ void midpoint_algo(t_stack *stack_a, t_stack *stack_b, t_stack *stack_d, int ac)
 	int valid;
 	t_stack *temp;
 	int mid;
-	// int mid2;
+	int mid2;
 	t_stack *sub_d;
 
 	temp = stack_d;
 	value = temp->next->value;
 	valid = temp->valid;
+	sub_d = zero_insert_stack(ac);
+	set_invalid(sub_d, ac);
 	if (valid == 1 || valid == 2)
 	{
 		midpoint_algo_two_b(stack_a, stack_b, temp, ac);
@@ -1137,11 +1138,9 @@ void midpoint_algo(t_stack *stack_a, t_stack *stack_b, t_stack *stack_d, int ac)
 	{
 		mid = midpoint_chunk_morethan_b(stack_b, value, ac);
 		push_a_iterate_top(stack_a, stack_b, ac, mid);
-		sub_d = zero_insert_stack(ac);
-		set_invalid(sub_d, ac);
-		while (valid_count_a_top(stack_a, mid) > 2)
+		while (valid_count_a_top(stack_a, mid, ac) > 2)
 		{
-			mid2 = midpoint_chunk_lessthan_a(stack_a, mid, ac)
+			mid2 = midpoint_chunk_lessthan_a(stack_a, mid, ac);
 			push_b_iterate_top(stack_a, stack_b, ac, mid2);
 			update_stack_d(sub_d, stack_b, ac, mid2);
 		}
@@ -1179,7 +1178,7 @@ void sort(t_stack *stack_a, t_stack *stack_b, int ac)
 	// 	temp = temp->next;
 	// }
 	
-	while (count_valid(stack_d) != 0)
+	while (valid_count(stack_d, ac) != 0)
 	{
 		midpoint_algo(stack_a, stack_b, stack_d, ac);
 		stack_d->valid = 0;
