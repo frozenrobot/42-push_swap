@@ -1020,22 +1020,22 @@ void update_stack_d(t_stack *stack_d, t_stack *stack_b, int ac, int mid)
 }
 
 void push_b_iterate_top(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
-{ // sends all values >= mid from a to b
+{ // sends ALL values >= mid from a to b
 	t_stack *temp;
 	int count_ra;
 
 	temp = stack_a;
 	count_ra = 0;
-	while (scan_left(stack_a, mid, ac) && valid_count_a_top(stack_a, mid, ac) > 2)
+	while (scan_left(stack_a, mid, ac))
 	{
-		while (temp->valid == 0 && scan_left(stack_a, mid, ac) && valid_count_a_top(stack_a, mid, ac) > 2)
+		while (temp->valid == 0 && scan_left(stack_a, mid, ac))
 			temp = temp->next;
-		while (temp->value >= mid && scan_left(stack_a, mid, ac) && valid_count_a_top(stack_a, mid, ac) > 2)
+		while (temp->value >= mid && scan_left(stack_a, mid, ac))
 		{
 			ra(stack_a, ac);
 			count_ra++;
 		}
-		while (temp->value < mid && scan_left(stack_a, mid, ac) && valid_count_a_top(stack_a, mid, ac) > 2)
+		while (temp->value < mid && scan_left(stack_a, mid, ac))
 		{
 			pb(stack_a, stack_b);
 			temp = temp->next;
@@ -1045,7 +1045,7 @@ void push_b_iterate_top(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
 	while (count_ra > 0)
 	{
 		rra(stack_a);
-		count--;
+		count_ra--;
 	}
 }
 
@@ -1056,16 +1056,16 @@ void push_a_iterate_top(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
 
 	temp = stack_a;
 	count_rb = 0;
-	while (scan_left_b(stack_b, mid, ac) && valid_count_b_top(stack_a, mid, ac) > 2)
+	while (scan_left_b(stack_b, mid, ac))
 	{
-		while (temp->valid == 0 && scan_left_b(stack_b, mid, ac) && valid_count_b_top(stack_b, mid, ac) > 2)
+		while (temp->valid == 0 && scan_left_b(stack_b, mid, ac))
 			temp = temp->next;
-		while (temp->value < mid && scan_left_b(stack_b, mid, ac) && valid_count_b_top(stack_b, mid, ac) > 2)
+		while (temp->value < mid && scan_left_b(stack_b, mid, ac))
 		{
 			rb(stack_b, ac);
 			count_rb++;
 		}
-		while (temp->value >= mid && scan_left_b(stack_b, mid, ac) && valid_count_b_top(stack_b, mid, ac) > 2)
+		while (temp->value >= mid && scan_left_b(stack_b, mid, ac))
 		{
 			pa(stack_a, stack_b);
 			temp = temp->next;
@@ -1075,21 +1075,37 @@ void push_a_iterate_top(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
 	while (count_rb > 0)
 	{
 		rrb(stack_b);
-		count--;
+		count_rb--;
 	}
 }
 
 void midpoint_algo(t_stack *stack_a, t_stack *stack_b, t_stack *stack_d, int ac)
 {
-	int value;
-	int valid;
+	// int value;
+	// int valid;
 
-	if (stack_d->valid == 0)
+	while (valid_count(stack_d, ac) != 0)
 	{
-		stack_d = stack_d->next;
-		return ;
+		
+		
+		if ///
+		{
+			return (midpoint_algo(stack_a, stack_b, sub_d, ac));
+		}
+		free sub_d
 	}
-	value = stack
+	// if (stack_d->valid == 0) //hmmmm
+	// {
+	// 	stack_d = stack_d->next;
+	// 	return ;
+	// }
+	// value = stack_d->value;
+	// valid = stack_d->valid;
+	// if (valid <= 2)
+	// {
+	// 	if 
+	// }
+	free_stack_cycle(stack_d, ac);
 }
 
 void sort(t_stack *stack_a, t_stack *stack_b, int ac)
