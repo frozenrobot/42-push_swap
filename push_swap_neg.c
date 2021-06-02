@@ -265,13 +265,13 @@ t_stack *zero_insert_stack(int ac) //handle stack size 1 or empty stack
 	t_stack *stack;
 	t_stack *temp;
 
-	stack = create_stack_elem(0, 1);
+	stack = create_stack_elem(-2147483648, 1);
 	if (!stack)
 		return (NULL);
 	i = 2;
 	while (i < ac)
 	{
-		stack = stack_add_back(stack, 0, i);
+		stack = stack_add_back(stack, -2147483648, i);
 		i++;
 	}
 	temp = stack;
@@ -1010,6 +1010,8 @@ void update_stack_d(t_stack *stack_d, t_stack *stack_b, int ac, int mid)
 	int previously;
 
 	previously = stack_d->next->value;
+	if (previously == -2147483648)
+		previously = 0;
 	temp = stack_d->prev;
 	while (temp->valid != 0)
 		temp = temp->prev;
@@ -1156,12 +1158,12 @@ void midpoint_algo(t_stack *stack_a, t_stack *stack_b, t_stack *stack_d, int ac)
 		stack_d->valid = first_valid(stack_a, ac);
 		if (valid_count_b_top(stack_b, value, ac) == 1 || valid_count_b_top(stack_b, value, ac) == 2)
 			midpoint_algo_two_b(stack_a, stack_b, stack_d, ac);
-		// t_stack *temp = stack_d;
-		// for (int k = 1; k < ac; k++)
-		// {
-		// 	printf("D%i [%i]: %i\n", k, temp->valid, temp->value);
-		// 	temp = temp->next;
-		// }
+		t_stack *temp = stack_d;
+		for (int k = 1; k < ac; k++)
+		{
+			printf("D%i [%i]: %i\n", k, temp->valid, temp->value);
+			temp = temp->next;
+		}
 		if (stack_d->valid != 0)
 			return (midpoint_algo(stack_a, stack_b, stack_d, ac));
 	}
@@ -1188,22 +1190,22 @@ void sort(t_stack *stack_a, t_stack *stack_b, int ac)
 	}
 
 
-	// t_stack *temp = stack_d_static;
-	// for (int k = 1; k < ac; k++)
-	// {
-	// 	printf("D%i [%i]: %i\n", k, temp->valid, temp->value);
-	// 	temp = temp->next;
-	// }
+	t_stack *temp = stack_d_static;
+	for (int k = 1; k < ac; k++)
+	{
+		printf("D%i [%i]: %i\n", k, temp->valid, temp->value);
+		temp = temp->next;
+	}
 
 	while (stack_d->valid == 0)
 		stack_d = stack_d->next; // becomes only as long as the number of 'big chunks' in stack_b
 
-	// temp = stack_d;
-	// for (int k = 1; k < ac; k++)
-	// {
-	// 	printf("D%i [%i]: %i\n", k, temp->valid, temp->value);
-	// 	temp = temp->next;
-	// }
+	temp = stack_d;
+	for (int k = 1; k < ac; k++)
+	{
+		printf("D%i [%i]: %i\n", k, temp->valid, temp->value);
+		temp = temp->next;
+	}
 
 	while (valid_count(stack_d, ac) != 0)
 	{
