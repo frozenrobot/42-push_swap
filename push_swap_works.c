@@ -872,82 +872,22 @@ int scan_left_b(t_stack *stack, int mid, int ac)
 	return (0);
 }
 
-void sort_less_than_three_a(t_stack *stack_a, int count, int ac)
+void sort_less_than_three_a(t_stack *stack_a, int ac)
 {
 	t_stack *temp;
 
 	temp = stack_a;
-	if (count == 0)
-		return;
-	while (temp->valid == 0)
-		temp = temp->next;
-	if (count == 1)
+	if (ac == 2)
 		return ;
-	else if (count == 2)
+	else if (ac == 3)
 	{
 		if (temp->value > temp->next->value)
 			sa(stack_a, ac);
 		return ;
 	}
-	else if (count == 3)
+	else if (ac == 4)
 		return three_sort_a(stack_a, ac);
 }
-
-void sort_less_than_three_b(t_stack *stack_b, int count, int ac)
-{
-	t_stack *temp;
-
-	temp = stack_b;
-	if (count == 0)
-		return;
-	while (temp->valid == 0)
-		temp = temp->next;
-	if (count == 1)
-		return ;
-	else if (count == 2)
-	{
-		if (temp->value > temp->next->value)
-			sb(stack_b, ac);
-		return ;
-	}
-	else if (count == 3)
-		return three_sort_a(stack_b, ac);
-}
-
-void midpoint_algo_first(t_stack *stack_a, t_stack *stack_b, int ac, int mid)
-{
-	t_stack *temp;
-
-	temp = stack_a;
-	// printf("mid=%i\n", mid);
-	while (scan_left(stack_a, mid, ac))
-	{
-		while (temp->valid == 0 && scan_left(stack_a, mid, ac))
-			temp = temp->next;
-		while (temp->value >= mid && scan_left(stack_a, mid, ac))
-			ra(stack_a, ac);
-		while (temp->value < mid && scan_left(stack_a, mid, ac))
-		{
-			pb(stack_a, stack_b);
-			temp = temp->next;
-			// printf("valid=%i\n", valid_count(stack_a, ac));
-		}
-		temp = temp->prev;
-		while (temp->valid == 0 && scan_left(stack_a, mid, ac))
-			temp = temp->prev;
-		while (temp->value >= mid && scan_left(stack_a, mid, ac))
-			rra(stack_a);
-		while (temp->value < mid && temp->valid == 1)
-		{
-			rra(stack_a);
-			pb(stack_a, stack_b);
-			// printf("valid=%i\n", valid_count(stack_a, ac));
-		}
-		temp = temp->next;
-	}
-	sort_less_than_three_a(stack_a, valid_count(stack_a, ac), ac);
-}
-
 
 int find_mid(t_stack *stack, int size)
 {
@@ -959,7 +899,7 @@ int find_mid(t_stack *stack, int size)
 
 	i = 0;
 	temp = stack;
-	stack_new = zero_insert_stack(size);
+	stack_new = zero_insert_stack(size + 1);
 	temp_new = stack_new;
 	while (temp->valid == 0)
 		temp = temp->next;
@@ -970,7 +910,7 @@ int find_mid(t_stack *stack, int size)
 		temp_new = temp_new->next;
 		i++;
 	}
-	unruled_insertion_sort(stack_new, size, 1, 0);
+	unruled_insertion_sort(stack_new, size + 1, 1, 0);
 	i = 0;
 	while (i < (size / 2))
 	{
@@ -1010,6 +950,29 @@ void push_b_iterate_top(t_stack *stack_a, t_stack *stack_b, int size, int ac)
 	{
 		rra(stack_a);
 		count_ra--;
+	}
+}
+
+void push_b_iterate_top_base(t_stack *stack_a, t_stack *stack_b, int size, int ac)
+{ // sends ALL values < mid from a to b
+	t_stack *temp;
+	int mid;
+
+	temp = stack_a;
+	mid = find_mid(stack_a, size);
+	while (scan_left(stack_a, mid, ac))
+	{
+		while (temp->valid == 0 && scan_left(stack_a, mid, ac))
+			temp = temp->next;
+		while (temp->value >= mid && scan_left(stack_a, mid, ac))
+		{
+			ra(stack_a, ac);
+		}
+		while (temp->value < mid && scan_left(stack_a, mid, ac))
+		{
+			pb(stack_a, stack_b);
+			temp = temp->next;
+		}
 	}
 }
 
@@ -1087,11 +1050,7 @@ void quick_sort_b(t_stack *stack_a, t_stack *stack_b, int size, int ac)
 	if (size == 1)
 		pa(stack_a, stack_b);
 	else if (size == 2)
-	{
 		twosort_b(stack_a, stack_b, ac);
-		pa(stack_a, stack_b);
-		pa(stack_a, stack_b);
-	}
 	else
 	{
 		push_a_iterate_top(stack_a, stack_b, size, ac);
@@ -1104,13 +1063,29 @@ void quick_sort_a(t_stack *stack_a, t_stack *stack_b, int size, int ac)
 {
 	if (size == 1)
 		return ;
-	if (size == 2)
+	else if (size == 2)
 		twosort_a(stack_a, ac);
 	else
 	{
 		push_b_iterate_top(stack_a, stack_b, size, ac);
-		quick_sort_a(stack_a, stack_b, (size / 2), ac);
-		quick_sort_b(stack_a, stack_b, (size - (size / 2)), ac);
+		quick_sort_a(stack_a, stack_b, (size - (size / 2)), ac);
+		quick_sort_b(stack_a, stack_b, (size / 2), ac);
+	}
+}
+
+void sort_less_than_five_a(t_stack *stack_a, t_stack *stack_b, int ac)
+{
+	if (ac == 5)
+	{
+		push_b_iterate_top_base(stack_a, stack_b, 4, 5);
+		twosort_a(stack_a, ac);
+		twosort_b(stack_a, stack_b, ac);
+	}
+	else if (ac == 6)
+	{
+		push_b_iterate_top_base(stack_a, stack_b, 5, 6);
+		three_sort_a(stack_a, ac);
+		twosort_b(stack_a, stack_b, ac);
 	}
 }
 
@@ -1118,37 +1093,39 @@ int main(int argc, char *argv[])
 {
 	t_stack *stack_a;
 	t_stack *stack_b;
-	// t_stack *stack_c;
-
 
 	if (!input_isvalid(argc, argv))
 	{
 		ft_putstr("Error\n");
 		return (1);
 	}
-	// ft_putnbr(input_isvalid(argc, argv));
-	// printf("\n%i\n\n", argc);
 	stack_a = args_insert_stack(argc, argv);
 	stack_b = make_stack_b(argc, argv);
-	// insertion_sort(stack_a, stack_b, argc);
-	quick_sort_a(stack_a, stack_b, argc - 1, argc);
-
-
-	t_stack *temp = stack_a;
-	for (int k = 1; k < argc; k++)
+	if (!is_sort_a(stack_a, argc))
 	{
-		printf("A%i [%i]: %i\n", k, temp->valid, temp->value);
-		temp = temp->next;
+		if (argc <= 4)
+			sort_less_than_three_a(stack_a, argc);
+		else if (argc <= 6)
+			sort_less_than_five_a(stack_a, stack_b, argc);
+		else
+			quick_sort_a(stack_a, stack_b, argc - 1, argc);
 	}
-	temp = stack_b;
-	for (int m = 1; m < argc; m++)
-	{
-		printf("B%i [%i]: %i\n", m, temp->valid, temp->value);
-		temp = temp->next;
-	}
+	
+
+	// t_stack *temp = stack_a;
+	// for (int k = 1; k < argc; k++)
+	// {
+	// 	printf("A%i [%i]: %i\n", k, temp->valid, temp->value);
+	// 	temp = temp->next;
+	// }
+	// temp = stack_b;
+	// for (int m = 1; m < argc; m++)
+	// {
+	// 	printf("B%i [%i]: %i\n", m, temp->valid, temp->value);
+	// 	temp = temp->next;
+	// }
 	// printf("mid = %i\n", midpoint(stack_c, argc));
 
 	free_stack_cycle(stack_a, argc);
 	free_stack_cycle(stack_b, argc);
-	// FREE STACK_C !!!
 }
