@@ -1,0 +1,12 @@
+{
+    "42header.email": "kgulati@student.42wolfsburg.de",
+    "42header.username": "kgulati",
+    "editor.detectIndentation": false,
+	"editor.insertSpaces": false,
+	"liveServer.settings.proxy": {
+		"enable": true
+	},
+	"files.associations": {
+		"sstream": "c"
+	}
+}
